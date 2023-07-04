@@ -20,8 +20,8 @@
       </draggable>
 
       <PostModal v-if="clickedPost" :post="clickedPost" v-show="hasShowModal" @close-click="hasShowModal=false"/>
-
       <Pagination v-if="!isLoading" :total="total" :limit="limit" @page-click="pageClick" :selected-page="page" />
+
     </div>
 </template>
 
