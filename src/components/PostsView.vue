@@ -4,8 +4,8 @@
         <b-input-group-prepend is-text>
           <b-icon icon="search" @click="handleSearch"></b-icon>
         </b-input-group-prepend>
-        <!-- v-model="searchText" -->
-        <b-form-input  type="search" placeholder="Search. . ." @keyup="handleInput"></b-form-input>
+        
+        <b-form-input v-model="searchText"  type="search" placeholder="Search. . ." @keyup="handleInput"></b-form-input>
       </b-input-group>
 
       <draggable v-model="posts" group="post" :Options="{ animation:500, handle:'.handle' }">
@@ -41,7 +41,7 @@ export default {
     return {
       posts: [],
       updatedPosts: [],
-      // searchText: 'cross+spawn',
+      searchText: '',
       clickedPost: null,
       isLoading: true,
       limit: 25,
@@ -57,7 +57,7 @@ export default {
       this.clickedPost = post
     },
 
-    getPackages() {
+    getPosts() {
       const from = (this.page - 1) * this.limit
 
       // fetch('http://localhost:3001/posts', {
@@ -69,10 +69,10 @@ export default {
       //   console.log(data)
       // });
 
-      fetch(`http://localhost:3001/posts/?page=${this.page}&from=${from}&limit=${this.limit}`)
+      fetch(`http://localhost:3001/posts/?page=${ this.page }&from=${ from }&limit=${ this.limit }&search=${ this.searchText }`)
       .then(response => response.json())
       .then(data => {
-        console.log(this.page,from,this.limit)
+        console.log(this.page,this.limit, this.total)
         console.log(data)
           this.total = data.total
           data.results.forEach((post) => {
@@ -111,44 +111,51 @@ export default {
     },
 
     handleInput(value) {
-      if(value.srcElement._value) this.handleSearch()
+      console.log('sdfsdfsd')
+       this.handleSearch()
     },
 
     changeUrl() {
       this.$router.push({ query: {
-        // q: this.searchText,
+        search: this.searchText,
         page: this.page.toString() 
       }})
     },
 
     handleSearch() {
-      // if(this.searchText !== this.$route.query.q){
-      //   this.limit = 25
-      //   this.total = 0
-      //   this.page = 1
-      //   this.changeUrl()
-      //   this.getPackages()
+      // if(this.searchText !== this.$route.query.q) {
+        this.limit = 25
+        this.total = 0
+        this.page = 1
+        this.changeUrl()
+        this.getPosts()
       // } 
     },
 
     pageClick(page) {
+      console.log(page)
       this.page = page
       this.changeUrl()
-      this.getPackages()
+      this.getPosts()
     },
 
   },
   mounted() {
-  //   if(this.$route.query.q) {
-  //   this.searchText = this.$route.query.q
-  // } else {
-  //   this.$router.push({ query: { q: this.searchText } })
-  // }
+    console.log(this.$route.query.page)
+    // if(this.$route.query.page) {
+    //   console.log(this.$route.query.q)
+    //   this.page =  this.$route.query.q 
+    // } else {
 
-  // const page = this.$route.query.page
-
-  // this.page = page ? parseInt(page, 10) : 1
-  this.getPackages()
+    // }
+      console.log(this.page)
+      this.$router.push({ query: { page: this.$route.query.page } })
+      
+      const page = this.$route.query.page
+      
+      this.page = page ? parseInt(page, 10) : 1
+      this.getPosts()
+      
   }
 }
 </script>

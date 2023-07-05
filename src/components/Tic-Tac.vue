@@ -22,11 +22,6 @@
         if (!this.square.state) {
           this.$emit('square-click')
         }
-        // if(this.bool) {
-        //   this.x = 'x'
-        // } else {
-        //   this.x = 'o'
-        // }
       }
     },
   }
@@ -39,11 +34,4 @@
       height: 100px;
       width: 100px;
     }
-    
-  /* .square:nth-child(2) {
-    clear: left;
-    background-color: gray; 
-    border: 5px solid yellow; 
- } */
-
   </style>

@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         pageClick: function(page) {
-            this.$emit('page-click',page)
+          this.$emit('page-click', page)
         }
     },
     data() {

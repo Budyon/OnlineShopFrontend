@@ -4,7 +4,7 @@
             <h2>POSTS</h2>
         </div>
         <div class="info">
-            <router-link to="/header">Home</router-link>    
+            <router-link to="/home">Home</router-link>    
             <router-link to="/posts">Posts</router-link>          
             <router-link to="/game">Game</router-link>     
         </div>

@@ -11,11 +11,22 @@
         <p>X - {{ xWinCount }}</p>
         <p>O - {{ oWinCount }}</p>
         <p style="color:red">{{ winnerName }}</p>
-      <button @click="clearSquare" style="border:none; backgroundColor:black; color:white">Reset</button>
       </div>
-      <b-input-group size="sm" class="mb-2" style="width: 150px; height: 20px" >
-        <b-form-input  inputmode="numeric" :maxlength="10" type="number"  @keyup="handleInput"></b-form-input>
-      </b-input-group>
+
+      <b-form @keyup="handleInput" @reset="clearSquares">
+
+        <b-form-input
+          id="input-1"
+          v-model="text"
+          type="number"
+          required
+       >
+      </b-form-input> 
+
+      <b-button type="reset" variant="danger">Reset</b-button>
+      <b-button style="margin-top: 5px;" type="button" variant="danger" @click="againGame" >Again</b-button>
+      
+    </b-form>
     </div>
 </template>
 
@@ -29,6 +40,7 @@ export default {
 
   data() {
     return {
+      text: '',
       squares: [
         {
           state: null,
@@ -71,16 +83,6 @@ export default {
       xArr: [],
       oArr: [],
       winArr: [],
-      //  [
-      //   [1,2,3],
-      //   [4,5,6],
-      //   [7,8,9],
-      //   [1,4,7],
-      //   [2,5,8],
-      //   [3,6,9],
-      //   [1,5,9],
-      //   [3,5,7]
-      // ],
       winCount: 0,
       xWinCount: 0,
       oWinCount: 0,
@@ -90,6 +92,18 @@ export default {
   },
 
   methods: {
+    againGame() {
+      this.text = ''
+      this.squares.forEach((element)=> {
+        element.state = null
+      })
+      this.bool = true
+      this.xArr = []
+      this.oArr = []
+      this.winnerName = ''
+      this.numRepeatColumn = 3
+      this.squares.length = 9 
+    },
     createWinArr() {
       let inputValue = this.numRepeatColumn 
       if(!isNaN(inputValue)) {
@@ -130,7 +144,6 @@ export default {
         }
         this.winArr.push(arr)
       }
-      console.log(this.winArr)
     }
     },
 
@@ -154,7 +167,8 @@ export default {
         this.createWinArr()
       }
     },
-    clearSquare() {
+
+    clearSquares() {
       this.squares.forEach((element)=> {
         element.state = null
       })
@@ -164,7 +178,10 @@ export default {
       this.xWinCount = 0
       this.oWinCount = 0
       this.winnerName = ''
+      this.numRepeatColumn = 3
+      this.squares.length = 9 
     },
+
     checkWhoWin (arr, winner) {
       for(let i = 0; i < this.winArr.length; i++) {
           for(let x = 0; x < this.winArr[i].length; x++) {
@@ -188,7 +205,7 @@ export default {
         }
     }, 
     squareClick(square) {
-      if(this.xWinCount === 0 && this.oWinCount === 0) {
+      if(!this.winnerName) {
         if(this.bool) {
           square.state = 'x'
           this.xArr.push(square.position)
