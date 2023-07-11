@@ -114,6 +114,7 @@ export default {
       for(let i = 1; i < inputValue * 2 + 3; i++) {
         let arr = []
         for(let x = 1; x < inputValue + 1; x++) {
+
           if(inputValue * 2 + 2 - i === 1) {
             if(x === 1) {
               num = y
@@ -122,6 +123,7 @@ export default {
             arr.push(num)
             num += inputValue + 1
           }
+
           else if(inputValue * 2 + 2 - i === 0) {
             if(x === 1) {
               num = g
@@ -129,7 +131,9 @@ export default {
             }
             arr.push(num)
             num += inputValue - 1
-          } else if(inputValue < i && i <= inputValue * 2) {
+          }
+          
+          else if(inputValue < i && i <= inputValue * 2) {
             if(x === 1) {
               num = k
               k++
@@ -142,6 +146,7 @@ export default {
           }
 
         }
+
         this.winArr.push(arr)
       }
     }

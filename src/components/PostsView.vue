@@ -1,27 +1,36 @@
 <template>
     <div>
-      <b-input-group size="sm" class="mb-2">
+      <b-input-group size="sm" class="mb-2" style="width: 400px">
         <b-input-group-prepend is-text>
-          <b-icon icon="search" @click="handleSearch"></b-icon>
+          <b-icon
+            icon="search"
+            @click="handleSearch">
+          </b-icon>
         </b-input-group-prepend>
         
-        <b-form-input v-model="searchText"  type="search" placeholder="Search. . ." @keyup="handleInput"></b-form-input>
+        <b-form-input
+          v-model="searchText"
+          type="search"
+          placeholder="Search. . ."
+          @keyup="handleInput">
+        </b-form-input>
+
       </b-input-group>
+      <PostCreate v-if="!isLoading"/> 
 
       <draggable v-model="posts" group="post" :Options="{ animation:500, handle:'.handle' }">
         <transition-group class="posts-container">
           <Post
-            v-for="(post, index) in posts"
-            :key="index"
+            v-for="(post) in posts"
+            :key="post.id"
             :post="post"
             @post-click="postClick(post)"
           />
         </transition-group>
       </draggable>
 
-      <PostModal v-if="clickedPost" :post="clickedPost" v-show="hasShowModal" @close-click="hasShowModal=false"/>
-      <Pagination v-if="!isLoading" :total="total" :limit="limit" @page-click="pageClick" :selected-page="page" />
-
+      <PostModal v-if="clickedPost" :post="clickedPost" v-show="hasShowModal" @close-click="hasShowModal=false" />
+      <Pagination v-if="!isLoading" :total="total" :limit="limit" @page-click="pageClick" :selectedPage="page" />
     </div>
 </template>
 
@@ -30,12 +39,15 @@ import Pagination from './Pagination.vue'
 import draggable from 'vuedraggable';
 import PostModal from './PostModal.vue'
 import Post from './Post.vue'
+import PostCreate from './PostCreate.vue';
+
 export default {
   components: {
     Post,
     PostModal,
     draggable,
     Pagination,
+    PostCreate
   },
   data() {
     return {
@@ -49,6 +61,8 @@ export default {
       colors: [],
       page: 1,
       hasShowModal: false,
+      hasShowForm: false,
+      timeoutID: undefined
     }
   },
     methods: {
@@ -60,39 +74,17 @@ export default {
     getPosts() {
       const from = (this.page - 1) * this.limit
 
-      // fetch('http://localhost:3001/posts', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json;charset=utf-8'
-      //   },
-      // }).then(response => response.json()).then(data => {
-      //   console.log(data)
-      // });
-
       fetch(`http://localhost:3001/posts/?page=${ this.page }&from=${ from }&limit=${ this.limit }&search=${ this.searchText }`)
       .then(response => response.json())
       .then(data => {
-        console.log(this.page,this.limit, this.total)
-        console.log(data)
+        console.log(data.results)
           this.total = data.total
           data.results.forEach((post) => {
             post.color = this.getRandomColor()
           })
           this.posts = data.results
           this.isLoading = false
-        })
-
-      // fetch(`https://api.npms.io/v2/search?q=${this.searchText}&from=${from}&limit=${this.limit}`)
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     console.log(data)
-      //     this.total = data.total
-      //     data.results.forEach((post) => {
-      //       post.color = this.getRandomColor()
-      //     })
-      //     this.posts = data.results
-      //     this.isLoading = false
-      //   })
+      })
     },
 
     getRandomColor()  {
@@ -110,52 +102,60 @@ export default {
       return color;
     },
 
-    handleInput(value) {
-      console.log('sdfsdfsd')
-       this.handleSearch()
+    handleInput() {
+      if (typeof this.timeoutID === "number") {
+        clearTimeout(this.timeoutID);
+      }
+
+      this.timeoutID = setTimeout(() => {
+        this.handleSearch()
+        
+      }, 1000);
     },
 
     changeUrl() {
-      this.$router.push({ query: {
-        search: this.searchText,
-        page: this.page.toString() 
-      }})
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          page: this.page.toString()
+        }
+      }).catch(() => ({}))
+      console.log(this.page)
     },
 
     handleSearch() {
-      // if(this.searchText !== this.$route.query.q) {
-        this.limit = 25
-        this.total = 0
-        this.page = 1
-        this.changeUrl()
-        this.getPosts()
-      // } 
+      console.log(parseInt(this.$route.query.page))
+      this.timeoutID = undefined
+      this.limit = 25
+      this.total = 0
+      this.page = 1
+      this.changeUrl()
+      this.getPosts()
     },
 
-    pageClick(page) {
-      console.log(page)
-      this.page = page
+    pageClick(clickedPage) {
+      this.page = clickedPage
       this.changeUrl()
       this.getPosts()
     },
 
   },
   mounted() {
-    console.log(this.$route.query.page)
-    // if(this.$route.query.page) {
-    //   console.log(this.$route.query.q)
-    //   this.page =  this.$route.query.q 
-    // } else {
+    if(this.$route.query.search) {
+      this.searchText = this.$route.query.search
+    }
 
-    // }
-      console.log(this.page)
-      this.$router.push({ query: { page: this.$route.query.page } })
-      
-      const page = this.$route.query.page
-      
-      this.page = page ? parseInt(page, 10) : 1
-      this.getPosts()
-      
+    const page = this.$route.query.page
+    this.page = page ? parseInt(page, 10) : 1
+
+    this.$router.push({
+      query: {
+        search: this.searchText,
+        page: this.$route.query.page
+      }
+    }).catch(() => ({}))
+
+    this.getPosts()
   }
 }
 </script>
@@ -179,4 +179,5 @@ input {
   height: 50px;
   width: 500px;
 }
+
 </style>
