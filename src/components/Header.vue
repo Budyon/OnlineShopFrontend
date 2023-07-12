@@ -13,6 +13,11 @@
 </template>
 
 <style scoped>
+    .router-link-active {
+        pointer-events: none;
+        color: red;
+    }
+    
     h2 {
         cursor: pointer;
         color: white;

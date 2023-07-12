@@ -95,7 +95,12 @@
 
         fetch('http://localhost:3001/posts', requestOptions)
         .then(async response => {
-          const data = await response.json();
+          const data = await response.json()
+
+          if (!response.ok) {
+            const error = (data && data.message) || response.status;
+            return Promise.reject(error);
+          }
 
           Object.keys(this.formPost).forEach((item) => {
             this.formPost[item] = ''
@@ -103,11 +108,7 @@
 
           this.messageCreatePost =  data.message
           this.hasShowMessage = true
-
-          if (!response.ok) {
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
+          this.$emit('post-create')
 
         })
         .catch(error => {
@@ -118,7 +119,6 @@
 
     computed: {
       isDisabled() {
-        console.log('comp')
         if(this.formPost.name  && this.formPost.scope  && this.formPost.unscoped  && this.formPost.description  && this.formPost.authorName !== '') {
           setTimeout(() => {
           this.hasShowMessage = false

@@ -18,8 +18,8 @@ Vue.use(VueRouter);
   mode: "history",
   scrollBehavior: () => ({ x: 0, y: 0 }),
   routes: [
-    { path: '/posts', component: PostsView, name:'/posts' },
-    { path: '/game', component: Game, name:'/game' }
+    { path: '/posts', component: PostsView, name:'posts' },
+    { path: '/game', component: Game, name:'game' }
   ],
 })
 

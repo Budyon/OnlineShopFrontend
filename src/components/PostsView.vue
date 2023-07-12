@@ -16,30 +16,32 @@
         </b-form-input>
 
       </b-input-group>
-      <PostCreate v-if="!isLoading"/> 
-
+      
+      <PostCreate @post-create="getPosts" v-if="!isLoading"/>
+      
       <draggable v-model="posts" group="post" :Options="{ animation:500, handle:'.handle' }">
         <transition-group class="posts-container">
           <Post
-            v-for="(post) in posts"
-            :key="post.id"
-            :post="post"
-            @post-click="postClick(post)"
+          v-for="(post) in posts"
+          :key="post.id"
+          :post="post"
+          @post-click="postClick(post)"
           />
         </transition-group>
       </draggable>
-
+      
       <PostModal v-if="clickedPost" :post="clickedPost" v-show="hasShowModal" @close-click="hasShowModal=false" />
-      <Pagination v-if="!isLoading" :total="total" :limit="limit" @page-click="pageClick" :selectedPage="page" />
+      <Pagination v-if="!isLoading" :total="total" :limit="limit" @page-click="pageClick" :selectedPage="page, posts"/>
+      
     </div>
 </template>
 
 <script>
 import Pagination from './Pagination.vue'
-import draggable from 'vuedraggable';
+import draggable from 'vuedraggable'
 import PostModal from './PostModal.vue'
 import Post from './Post.vue'
-import PostCreate from './PostCreate.vue';
+import PostCreate from './PostCreate.vue'
 
 export default {
   components: {
@@ -52,7 +54,6 @@ export default {
   data() {
     return {
       posts: [],
-      updatedPosts: [],
       searchText: '',
       clickedPost: null,
       isLoading: true,
@@ -61,8 +62,7 @@ export default {
       colors: [],
       page: 1,
       hasShowModal: false,
-      hasShowForm: false,
-      timeoutID: undefined
+      timeoutID: undefined,
     }
   },
     methods: {
@@ -77,11 +77,11 @@ export default {
       fetch(`http://localhost:3001/posts/?page=${ this.page }&from=${ from }&limit=${ this.limit }&search=${ this.searchText }`)
       .then(response => response.json())
       .then(data => {
-        console.log(data.results)
           this.total = data.total
           data.results.forEach((post) => {
             post.color = this.getRandomColor()
           })
+          
           this.posts = data.results
           this.isLoading = false
       })
@@ -114,21 +114,23 @@ export default {
     },
 
     changeUrl() {
-      this.$router.push({
-        query: {
-          search: this.searchText,
-          page: this.page.toString()
-        }
-      }).catch(() => ({}))
-      console.log(this.page)
-    },
 
+      let query = {
+        ...(this.searchText !== '' ? {search: this.searchText} : {}),
+        ...(this.page > 1 ? {page: this.page} : {})
+      }
+
+      this.$router.push({
+        query
+      }).catch(() => ({}))
+    },
+    
     handleSearch() {
-      console.log(parseInt(this.$route.query.page))
       this.timeoutID = undefined
       this.limit = 25
       this.total = 0
       this.page = 1
+      this.clickedPost = null
       this.changeUrl()
       this.getPosts()
     },
@@ -148,20 +150,13 @@ export default {
     const page = this.$route.query.page
     this.page = page ? parseInt(page, 10) : 1
 
-    this.$router.push({
-      query: {
-        search: this.searchText,
-        page: this.$route.query.page
-      }
-    }).catch(() => ({}))
-
     this.getPosts()
   }
 }
 </script>
 
 <style scoped>
-  .posts-container {
+.posts-container {
   padding: 0 100px;
   display: flex;
   flex-wrap: wrap;
@@ -171,7 +166,7 @@ export default {
 }
 
 ::placeholder {
-   text-align: center; 
+  text-align: center; 
 }
 
 input {
