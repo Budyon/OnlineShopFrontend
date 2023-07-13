@@ -1,6 +1,6 @@
 <template>
   <div id="pagination" v-cloak>
-    <p v-if="hasSHowSelectedPage"> Selected page: {{ selectedPage }}</p>
+    <p> Selected page: {{ selectedPage }} </p>
 
     <pagination
       :records="total"
@@ -28,34 +28,23 @@ export default {
       type: Number,
       default: 1
     },
-    posts: {
-      type: Array,
-      default: []
-    }
   },
 
   data() {
     return {
       page: this.selectedPage,
-      hasSHowSelectedPage: false
     }
   },
 
   methods: {
     pageClick: function(page) {
       this.$emit('page-click', page)
-    }
+    },
   },
 
   updated() {
     this.page = this.selectedPage
   },
-
-  mounted() {
-    if(this.posts.length > 0) {
-      this.hasSHowSelectedPage = true
-    }
-  }
 }
 
 </script>
@@ -65,11 +54,8 @@ export default {
   align-items: center;
 }
 
-.VuePagination__count {
-  color: red;
-}
-
 [v-cloak] {
   display: none;
 }
+
 </style>

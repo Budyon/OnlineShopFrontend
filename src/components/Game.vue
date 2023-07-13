@@ -101,9 +101,9 @@ export default {
       this.xArr = []
       this.oArr = []
       this.winnerName = ''
-      this.numRepeatColumn = 3
       this.squares.length = 9 
     },
+
     createWinArr() {
       let inputValue = this.numRepeatColumn 
       if(!isNaN(inputValue)) {
@@ -144,9 +144,8 @@ export default {
             arr.push(num)
             num++
           }
-
         }
-
+        
         this.winArr.push(arr)
       }
     }
@@ -183,7 +182,6 @@ export default {
       this.xWinCount = 0
       this.oWinCount = 0
       this.winnerName = ''
-      this.numRepeatColumn = 3
       this.squares.length = 9 
     },
 
@@ -215,20 +213,20 @@ export default {
           square.state = 'x'
           this.xArr.push(square.position)
           this.bool = false
-        }else {
+        } else {
           square.state = 'o'
           this.oArr.push(square.position)
           this.bool = true
         }
       
-      if(this.xArr.length >= this.numRepeatColumn) {
-        this.checkWhoWin(this.xArr, 'X')
+        if(this.xArr.length >= this.numRepeatColumn) {
+          this.checkWhoWin(this.xArr, 'X')
+        }
+        
+        if(this.oArr.length >= this.numRepeatColumn) {
+          this.checkWhoWin(this.oArr, 'O')
+        }
       }
-      
-      if(this.oArr.length >= this.numRepeatColumn) {
-        this.checkWhoWin(this.oArr, 'O')
-      }
-    }
     }
   },
   mounted() {

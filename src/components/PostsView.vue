@@ -1,12 +1,6 @@
 <template>
     <div>
       <b-input-group size="sm" class="mb-2" style="width: 400px">
-        <b-input-group-prepend is-text>
-          <b-icon
-            icon="search"
-            @click="handleSearch">
-          </b-icon>
-        </b-input-group-prepend>
         
         <b-form-input
           v-model="searchText"
@@ -19,7 +13,7 @@
       
       <PostCreate @post-create="getPosts" v-if="!isLoading"/>
       
-      <draggable v-model="posts" group="post" :Options="{ animation:500, handle:'.handle' }">
+      <draggable v-model="posts" group="post" :Options="{ animation: 500, handle: '.handle' }">
         <transition-group class="posts-container">
           <Post
           v-for="(post) in posts"
@@ -31,7 +25,7 @@
       </draggable>
       
       <PostModal v-if="clickedPost" :post="clickedPost" v-show="hasShowModal" @close-click="hasShowModal=false" />
-      <Pagination v-if="!isLoading" :total="total" :limit="limit" @page-click="pageClick" :selectedPage="page, posts"/>
+      <Pagination v-if="!isLoading && posts.length" :total="total" :limit="limit" @page-click="pageClick" />
       
     </div>
 </template>
@@ -44,6 +38,7 @@ import Post from './Post.vue'
 import PostCreate from './PostCreate.vue'
 
 export default {
+
   components: {
     Post,
     PostModal,

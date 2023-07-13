@@ -44,9 +44,20 @@
       >
       </b-form-input>
 
+      <b-button ref="buttonUpload" style="margin-top: 10px;" @click="onPickFile">Upload post picture</b-button>
+
+      <input
+        name='NAME'
+        type="file"
+        style="display: none"
+        ref="fileInput"
+        accept="image/*"
+        @change="onFilePicked"/>
+
       <b-button :disabled="isDisabled" type="button" class="button" @click="createPost" pill> Create </b-button>
 
       <p v-if="hasShowMessage" ref="message" >{{ messageCreatePost }}</p>
+      <p v-if="hasShowError"> {{errorCreatePost}} </p>
 
     </b-form>
   </div> 
@@ -65,13 +76,41 @@
           description: '',
           authorName: '',
         },
-        hasInputsEmpty: true,
+
         messageCreatePost: '',
+        errorCreatePost: '',
         hasShowMessage: false,
+        hasShowError: false,
+        image: null
       }    
     },
 
     methods: {
+      onPickFile () {
+        this.$refs.fileInput.click()
+      },
+
+      onFilePicked (event) {
+        const files = event.target.files
+        let button = this.$refs.buttonUpload
+        
+        if(files.length) {
+          button.style.backgroundColor = "blue"
+          const fileReader = new FileReader()
+
+          fileReader.addEventListener('load', () => {
+            console.log('sdfdsf')
+            this.imageUrl = fileReader.result
+          })
+
+          fileReader.readAsDataURL(files[0])
+          
+          this.image = files[0]
+        } else {
+          button.style.backgroundColor = "grey"
+        }
+0      },
+
       changeHasShowForm() {
         if(!this.hasShowForm) {
           this.hasShowForm = true
@@ -81,16 +120,19 @@
       },
 
       createPost() {
+        let formData = new FormData()
+
+        formData.append( 'recfile', this.image)
+        formData.append( 'name', this.formPost.name)
+        formData.append( 'scope', this.formPost.scope)
+        formData.append( 'unscoped', this.formPost.unscoped)
+        formData.append( 'description', this.formPost.description)
+        formData.append( 'authorName', this.formPost.authorName)
+
         const requestOptions = {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-          { name: this.formPost.name,
-            scope: this.formPost.scope,
-            unscoped: this.formPost.unscoped,
-            description: this.formPost.description,
-            authorName: this.formPost.authorName
-          })
+          'Content-Type': "multipart/form-data",
+          body: formData
         };
 
         fetch('http://localhost:3001/posts', requestOptions)
@@ -112,7 +154,9 @@
 
         })
         .catch(error => {
-          console.error('There was an error!', error);
+          this.errorCreatePost = "Post Dont Created"
+          this.hasShowError = true
+          console.error('There was an error!', error)
         });
       }
     },
@@ -121,8 +165,9 @@
       isDisabled() {
         if(this.formPost.name  && this.formPost.scope  && this.formPost.unscoped  && this.formPost.description  && this.formPost.authorName !== '') {
           setTimeout(() => {
-          this.hasShowMessage = false
-        }, 3000);
+            this.hasShowMessage = false
+            this.hasShowError = false
+          }, 3000);
 
           return  false
         } else {
@@ -140,8 +185,13 @@
   }
 
   .button {
+    display: block;
     margin: 10px 0 10px 10px;
     background: red;
     border: none;
+  }
+
+  #file-large {
+    width: 200px;
   }
 </style>
