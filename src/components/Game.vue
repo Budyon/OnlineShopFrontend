@@ -20,13 +20,12 @@
           v-model="text"
           type="number"
           required
-       >
-      </b-form-input> 
+        >
+        </b-form-input> 
 
-      <b-button type="reset" variant="danger">Reset</b-button>
-      <b-button style="margin-top: 5px;" type="button" variant="danger" @click="againGame" >Again</b-button>
-      
-    </b-form>
+        <b-button type="reset" variant="danger">Reset</b-button>
+        <b-button style="margin-top: 5px;" type="button" variant="danger" @click="againGame" >Again</b-button>
+     </b-form>
     </div>
 </template>
 

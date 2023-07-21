@@ -76,7 +76,6 @@ export default {
           data.results.forEach((post) => {
             post.color = this.getRandomColor()
           })
-          
           this.posts = data.results
           this.isLoading = false
       })

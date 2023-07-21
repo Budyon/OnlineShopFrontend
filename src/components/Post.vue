@@ -2,6 +2,8 @@
   <div :style="{ background: post.color }" class="post handle">
     <div  @click="onClick" class="post-container">
       <div class="title-box">
+        <h2 v-if="post.image">{{ Object.keys(post)[6] }}</h2>
+        <img v-if="post.image" style="width: 100px;height:100px" :src="'http://localhost:3001/' + post.image">
         <h2>{{ Object.keys(post)[1] }}</h2>
         <span>{{ post.name }}</span>
         <h2>{{ Object.keys(post)[2] }}</h2>
@@ -45,7 +47,7 @@ export default {
   width: 22em;
   height: 30em;
   background-size: 22em 30em;
-  box-shadow: 3px 3px 20px rgba(0,0,0,0.5);
+  box-shadow: 14px 15px 20px rgba(0,0,0,0.5);
   margin: auto;
   overflow: hidden;
 }

@@ -2,6 +2,7 @@
     <div class="modal-overlay">
       <div class="custom-modal">
         <button @click="onClick" style="color:red">X</button>
+        <img  style="width: 100px; height: 100px" :src="'http://localhost:3001/' + post.image">  
         <p> {{ post.name }}</p> 
         <p> {{ post.scope }}</p>
         <p> {{ post.unscoped }}</p>

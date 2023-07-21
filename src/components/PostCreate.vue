@@ -43,11 +43,11 @@
         placeholder="author name"
       >
       </b-form-input>
-
+      
       <b-button ref="buttonUpload" style="margin-top: 10px;" @click="onPickFile">Upload post picture</b-button>
 
       <input
-        name='NAME'
+        name="picture"
         type="file"
         style="display: none"
         ref="fileInput"
@@ -56,8 +56,8 @@
 
       <b-button :disabled="isDisabled" type="button" class="button" @click="createPost" pill> Create </b-button>
 
-      <p v-if="hasShowMessage" ref="message" >{{ messageCreatePost }}</p>
-      <p v-if="hasShowError"> {{errorCreatePost}} </p>
+      <p v-if="hasShowMessage">{{ messageCreatePost }}</p>
+      <p v-if="hasShowError"> {{ errorCreatePost }} </p>
 
     </b-form>
   </div> 
@@ -85,7 +85,7 @@
       }    
     },
 
-    methods: {
+    methods: {    
       onPickFile () {
         this.$refs.fileInput.click()
       },
@@ -99,7 +99,6 @@
           const fileReader = new FileReader()
 
           fileReader.addEventListener('load', () => {
-            console.log('sdfdsf')
             this.imageUrl = fileReader.result
           })
 
@@ -107,8 +106,8 @@
           
           this.image = files[0]
         } else {
-          button.style.backgroundColor = "grey"
-        }
+           button.style.backgroundColor = "grey"
+          }
 0      },
 
       changeHasShowForm() {
@@ -120,18 +119,18 @@
       },
 
       createPost() {
+        
         let formData = new FormData()
-
-        formData.append( 'recfile', this.image)
+        formData.append( 'picture', this.image)
         formData.append( 'name', this.formPost.name)
         formData.append( 'scope', this.formPost.scope)
         formData.append( 'unscoped', this.formPost.unscoped)
         formData.append( 'description', this.formPost.description)
         formData.append( 'authorName', this.formPost.authorName)
-
+        
         const requestOptions = {
           method: 'POST',
-          'Content-Type': "multipart/form-data",
+          "Content-Type": "multipart/form-data",
           body: formData
         };
 
@@ -148,31 +147,40 @@
             this.formPost[item] = ''
           })
 
+          let button = this.$refs.buttonUpload
+          button.style.backgroundColor = "grey"
+
+          this.image = null
           this.messageCreatePost =  data.message
           this.hasShowMessage = true
+
+          setTimeout(() => {
+            this.hasShowMessage = false
+          }, 3000);
+
           this.$emit('post-create')
 
         })
         .catch(error => {
-          this.errorCreatePost = "Post Dont Created"
+          console.log(error)
+          this.errorCreatePost = error
           this.hasShowError = true
-          console.error('There was an error!', error)
+
+          setTimeout(() => {
+            this.hasShowError = false
+          }, 3000)
         });
       }
     },
 
     computed: {
       isDisabled() {
-        if(this.formPost.name  && this.formPost.scope  && this.formPost.unscoped  && this.formPost.description  && this.formPost.authorName !== '') {
-          setTimeout(() => {
-            this.hasShowMessage = false
-            this.hasShowError = false
-          }, 3000);
-
-          return  false
-        } else {
-          return true
-        }
+        return  !(
+          this.formPost.name  &&
+          this.formPost.scope  &&
+          this.formPost.unscoped  &&
+          this.formPost.description  &&
+          this.formPost.authorName !== '')
       },
     },
   }
