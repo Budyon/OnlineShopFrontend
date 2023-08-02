@@ -1,19 +1,14 @@
 <template>
-  <div :style="{ background: post.color }" class="post handle">
+  <div>
     <div  @click="onClick" class="post-container">
-      <div class="title-box">
-        <h2 v-if="post.image">{{ Object.keys(post)[6] }}</h2>
-        <img v-if="post.image" style="width: 100px;height:100px" :src="'http://localhost:3001/' + post.image">
-        <h2>{{ Object.keys(post)[1] }}</h2>
+      <div class="post-info d-flex">
+        <img class="image" v-if="post.image" :src="'http://localhost:3001/' + post.image">
         <span>{{ post.name }}</span>
-        <h2>{{ Object.keys(post)[2] }}</h2>
         <span> {{ post.scope }}</span>
-        <h2>{{ Object.keys(post)[3] }}</h2>
         <span> {{ post.unscoped }}</span>
-        <h2>{{ Object.keys(post)[4] }}</h2>
         <span> {{ post.description }}</span>
-        <h2>{{ Object.keys(post)[5] }}</h2>
         <span> {{ post.authorName }}</span>
+        <span class="date-post"> {{ post.date }}</span>
       </div>
     </div>
   </div>
@@ -22,7 +17,7 @@
 <script>
 export default {
 
-    props: {
+  props: {
       post: {
         type: Object,
         default: {}
@@ -40,34 +35,43 @@ export default {
 
 .post-container {
   display: flex;
-  flex-wrap: wrap;
-  padding: 0 100px;
-  border-radius: 15px;
-  position: relative;
-  width: 22em;
-  height: 30em;
-  background-size: 22em 30em;
+  flex-direction: column;
+  justify-content: center;
+  width: 350px;
   box-shadow: 14px 15px 20px rgba(0,0,0,0.5);
   margin: auto;
   overflow: hidden;
-}
- .title-box {
-  display: inline-block;
-  width: 100%;
-  text-align: center;
-  margin-top: 2em;
+  border-radius: 15px;
 }
 
-h2{
+.d-flex {
+  display: flex;
+}
+.post-info {
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+h2 {
   font-weight: 500;
   font-size: 1.4em;
   text-align: center;
 }
-
 .post {
   cursor: pointer;
-  border-radius: 15px;
   margin: 35px;
-} 
+}
+.image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
 
+.date-post {
+  font-size: 12px;
+  text-align: end;
+  font-style: oblique;
+  padding: 5px
+}
 </style>

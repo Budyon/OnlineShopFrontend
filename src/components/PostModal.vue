@@ -1,14 +1,15 @@
 <template>
     <div class="modal-overlay">
       <div class="custom-modal">
-        <button @click="onClick" style="color:red">X</button>
-        <img  style="width: 100px; height: 100px" :src="'http://localhost:3001/' + post.image">  
-        <p> {{ post.name }}</p> 
-        <p> {{ post.scope }}</p>
-        <p> {{ post.unscoped }}</p>
-        <p> {{ post.description }}</p>
-        <p> {{ post.authorName }}</p>
-        <div class="close">
+        <img class="close-img" @click="onClick" src="../assets/close.svg" alt="" contain>
+        <img class="post-img" v-if="post.image" :src="'http://localhost:3001/' + post.image">
+        <div class=" post-info d-flex" >
+          <span> {{ post.name }}</span> 
+          <span> {{ post.scope }}</span>
+          <span> {{ post.unscoped }}</span>
+          <span> {{ post.description }}</span>
+          <span> {{ post.authorName }}</span>
+          <span class="date-post"> {{ post.date }}</span>
         </div>
       </div>
     </div>
@@ -33,39 +34,63 @@
 
 
 <style scoped>
+
+.d-flex {
+  display: flex;
+}
 .modal-overlay {
+  display: flex;
   position: fixed;
+  align-items: center;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
+  background-color: #00000066;
   justify-content: center;
-  background-color: #000000da;
 }
 
 .custom-modal {
-  text-align: center;
-  background-color: palevioletred;
-  height: 350px;
-  width: 500px;
-  margin-top: 10%;
-  padding: 60px 0;
-  border-radius: 20px;
+  background-color:#9E9E9E;
+  border-radius: 10px;
 }
 
 p {
   font-size: 16px;
   margin: 0;
   margin-bottom: 28px;
+  cursor: pointer;
 }
 
-button {
-  color: red;
+.close-img {
   position: absolute;
-  top: 0;
   right: 0;
   cursor: pointer;
-  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  z-index: 1;
 }
+
+.post-img {
+  object-fit: cover;
+  width: 440px;
+  height: 200px;
+  border-radius: 10px 10px 0 0;
+}
+.post-info {
+  width: 440px;
+  height: 260px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.date-post {
+  font-size: 12px;
+  text-align: end;
+  font-style: oblique;
+}
+
 </style>

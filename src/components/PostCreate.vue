@@ -1,9 +1,11 @@
 <template>
   <div>
-    <b-button @click="changeHasShowForm" style="margin-left: 10px;" pill> Create Post</b-button> 
+    <div>
+      
+    </div>
+    <b-button class="btn-create-post" @click="changeHasShowForm" pill> Create Post</b-button> <hr>
     
-    <b-form @submit="createPost" v-if="hasShowForm">
-
+    <form class="form-create" @submit="createPost" v-if="hasShowForm">
       <b-form-input
         v-model="formPost.name"
         class="input"
@@ -11,7 +13,6 @@
         placeholder="name"
         >
       </b-form-input>
-      
       <b-form-input
         v-model="formPost.scope"
         class="input"
@@ -19,7 +20,6 @@
         placeholder="scope"
         >
       </b-form-input>
-      
       <b-form-input
         v-model="formPost.unscoped"
         class="input"
@@ -27,7 +27,6 @@
         placeholder="unscoped"
         >
       </b-form-input>
-      
       <b-form-input
         v-model="formPost.description"
         class="input"
@@ -35,7 +34,6 @@
         placeholder="description"
       >
       </b-form-input>
-    
       <b-form-input
         v-model="formPost.authorName"
         class="input"
@@ -43,8 +41,7 @@
         placeholder="author name"
       >
       </b-form-input>
-      
-      <b-button ref="buttonUpload" style="margin-top: 10px;" @click="onPickFile">Upload post picture</b-button>
+      <b-button ref="buttonUpload" @click="onPickFile">Upload post picture</b-button>
 
       <input
         name="picture"
@@ -56,10 +53,9 @@
 
       <b-button :disabled="isDisabled" type="button" class="button" @click="createPost" pill> Create </b-button>
 
-      <p v-if="hasShowMessage">{{ messageCreatePost }}</p>
-      <p v-if="hasShowError"> {{ errorCreatePost }} </p>
-
-    </b-form>
+      <b-alert v-if="hasShowMessage" show variant="success">{{ messageCreatePost }}</b-alert>
+      <b-alert v-if="hasShowError" show variant="success">{{ errorCreatePost }}</b-alert>
+    </form>
   </div> 
   </template>
 
@@ -188,18 +184,24 @@
 
 <style scoped >
   .input {
-    margin-top: 10px;
     width: 500px;
   }
 
   .button {
     display: block;
-    margin: 10px 0 10px 10px;
     background: red;
     border: none;
   }
 
-  #file-large {
+  .btn-create-post {
+    left: 10px;
+    top: 15px;
+  }
+  .form-create {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     width: 200px;
+    padding: 15px;
   }
 </style>

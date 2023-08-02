@@ -32,18 +32,19 @@ export default {
 
   data() {
     return {
-      page: this.selectedPage,
+      page: 1,
     }
   },
 
   methods: {
-    pageClick: function(page) {
+    pageClick(page) {
+      console.log(this.selectedPage);
       this.$emit('page-click', page)
     },
   },
 
-  updated() {
-    this.page = this.selectedPage
+  mounted() {
+    if(this.$route.query.page) this.page = Number(this.$route.query.page)
   },
 }
 

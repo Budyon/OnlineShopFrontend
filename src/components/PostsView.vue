@@ -1,16 +1,14 @@
 <template>
     <div>
-      <b-input-group size="sm" class="mb-2" style="width: 400px">
+      <div class="cont-input-search">
+        <input
+        v-model="searchText"
+        placeholder="Search. . ."
+        @keydown="handleInput"
+        class="input-search"
+        >
+      </div>
         
-        <b-form-input
-          v-model="searchText"
-          type="search"
-          placeholder="Search. . ."
-          @keyup="handleInput">
-        </b-form-input>
-
-      </b-input-group>
-      
       <PostCreate @post-create="getPosts" v-if="!isLoading"/>
       
       <draggable v-model="posts" group="post" :Options="{ animation: 500, handle: '.handle' }">
@@ -25,7 +23,7 @@
       </draggable>
       
       <PostModal v-if="clickedPost" :post="clickedPost" v-show="hasShowModal" @close-click="hasShowModal=false" />
-      <Pagination v-if="!isLoading && posts.length" :total="total" :limit="limit" @page-click="pageClick" />
+      <Pagination v-if="!isLoading && posts.length" :total="total" :limit="limit" @page-click="pageClick" :selectedPage="page" />
       
     </div>
 </template>
@@ -38,7 +36,6 @@ import Post from './Post.vue'
 import PostCreate from './PostCreate.vue'
 
 export default {
-
   components: {
     Post,
     PostModal,
@@ -68,17 +65,20 @@ export default {
 
     getPosts() {
       const from = (this.page - 1) * this.limit
-
-      fetch(`http://localhost:3001/posts/?page=${ this.page }&from=${ from }&limit=${ this.limit }&search=${ this.searchText }`)
-      .then(response => response.json())
-      .then(data => {
-          this.total = data.total
-          data.results.forEach((post) => {
-            post.color = this.getRandomColor()
-          })
-          this.posts = data.results
-          this.isLoading = false
-      })
+      try {
+        fetch(`http://localhost:3001/posts/?page=${ this.page }&from=${ from }&limit=${ this.limit }&search=${ this.searchText }`)
+        .then(response => response.json())
+        .then(data => {
+            this.total = data.total
+            data.results.forEach((post) => {
+              // post.color = this.getRandomColor()
+            })
+            this.posts = data.results
+            this.isLoading = false
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
 
     getRandomColor()  {
@@ -104,7 +104,7 @@ export default {
       this.timeoutID = setTimeout(() => {
         this.handleSearch()
         
-      }, 1000);
+      }, 200);
     },
 
     changeUrl() {
@@ -151,22 +151,25 @@ export default {
 
 <style scoped>
 .posts-container {
-  padding: 0 100px;
   display: flex;
   flex-wrap: wrap;
-}
-.input {
-  text-align: center;
+  align-content: stretch;
+  justify-content: space-evenly;
 }
 
 ::placeholder {
   text-align: center; 
 }
 
-input {
-  border-radius: 5px;
-  height: 50px;
+.input-search {
   width: 500px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+}
+
+.cont-input-search {
+  padding:10px
 }
 
 </style>
